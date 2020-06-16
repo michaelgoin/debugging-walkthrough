@@ -1,0 +1,22 @@
+{
+  "name": "debugging-walkthrough",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelgoin/debugging-walkthrough.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michaelgoin/debugging-walkthrough/issues"
+  },
+  "homepage": "https://github.com/michaelgoin/debugging-walkthrough#readme",
+  "dependencies": {
+    "newrelic": "^6.9.0"
+  }
+}
