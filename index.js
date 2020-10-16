@@ -5,12 +5,25 @@ const nr = require('newrelic')
 const CustomQueue = require('./custom-queue')
 const queue = new CustomQueue()
 
-nr.startBackgroundTransaction('first work batch', () => {
-  queue.pushTask(function first(done) {
+nr.agent.on('transactionFinished', (transaction) => {
+  console.log('transaction ended: ', transaction.name)
+})
+
+// Transaction per scheduled item as that is where the measurable work happens
+// and does not absorb time waiting for other tasks.
+
+// If queue time important, would calculate that separately and attach as a metric
+// or custom attribute.
+
+queue.pushTask(function first(done) {
+  nr.startBackgroundTransaction('first work batch', () => {
+    const transaction = nr.getTransaction()
+
+    console.log('start first')
     nr.startSegment('first batch segment', true, doWork1)
 
     console.log('ending first work batch')
-    const transaction = nr.getTransaction()
+
     transaction.end()
 
     done()
@@ -21,17 +34,25 @@ function doWork1() {
   // do some work
 }
 
-nr.startBackgroundTransaction('second work batch', () => {
-  queue.pushTask(function second(done) {
+
+
+queue.pushTask(function second(done) {
+  nr.startBackgroundTransaction('second work batch', () => {
+    const transaction = nr.getTransaction()
+
+    console.log('start second')
+
     nr.startSegment('second batch segment', true, doWork2)
 
     console.log('ending second work batch')
-    const transaction = nr.getTransaction()
+
     transaction.end()
 
     done()
   })
 })
+
+
 
 function doWork2(cb) {
   // do some work
